@@ -1,6 +1,8 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import os                         
+import matplotlib.font_manager as fm
 
 # 設定網頁標題與排版
 st.set_page_config(page_title="Bingham 泥流與明渠沖刷即時推估工具", layout="wide")
