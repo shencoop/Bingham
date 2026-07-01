@@ -10,7 +10,7 @@ st.set_page_config(page_title="Bingham 泥流與明渠沖刷即時推估工具",
 # ==========================================
 # 終極方案：建立字型物件，後面繪圖直接調用
 # ==========================================
-font_path = "NotoSansTC.ttf"
+font_path = "NotoSerifTC.ttf"
 if os.path.exists(font_path):
     my_font = fm.FontProperties(fname=font_path)
 else:
