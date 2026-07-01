@@ -1,14 +1,15 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-import os                         
+import os                         # 👈 確保有加上這一行！
 import matplotlib.font_manager as fm
 
 # 設定網頁標題與排版
 st.set_page_config(page_title="Bingham 泥流與明渠沖刷即時推估工具", layout="wide")
 
-# 支持中文顯示
-# 修正後的寫法：優先使用 Linux 伺服器常見的開源中文自行，再相容 Windows/Mac
+# ==========================================
+# 解決 Streamlit Cloud 中文亂碼的終極方案
+# ==========================================
 font_path = "NotoSansTC.ttf"  # 確保字型檔跟 app.py 在同一個資料夾
 
 if os.path.exists(font_path):
