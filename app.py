@@ -32,9 +32,13 @@ channel_w = st.sidebar.slider("渠道頂寬/底寬 W (m)", min_value=5.0, max_va
 if channel_type == "V 型河谷斷面":
     valley_m = st.sidebar.slider("V型邊坡係數 (1:m)", min_value=0.5, max_value=3.0, value=1.5, step=0.1)
 
-st.sidebar.header("🌧️ 3. 降雨與集水區資量")
+ 
+st.sidebar.header("🌧️ 3. 降雨與集水區資料")
 rain_mm = st.sidebar.slider("延時降雨量 (mm)", min_value=20, max_value=500, value=150, step=10)
-catchment_area = st.sidebar.slider("集水區面積 (萬 m²)", min_value=1.0, max_value=50.0, value=10.0, step=1.0) * 10000
+
+# 這裡調整為公頃 (ha)，1 公頃 = 10,000 m²
+catchment_ha = st.sidebar.slider("集水區面積 (公頃 ha)", min_value=0.5, max_value=100.0, value=10.0, step=0.5)
+catchment_area = catchment_ha * 10000  # 自動換算為 m² 帶入後續力學計算
 runoff_coef = st.sidebar.slider("地表逕流/流體啟動係數", min_value=0.2, max_value=0.9, value=0.6, step=0.05)
 
 st.sidebar.header("🧪 4. Bingham 流體性質")
