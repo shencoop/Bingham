@@ -7,13 +7,18 @@ st.set_page_config(page_title="Bingham 泥流與明渠沖刷即時推估工具",
 
 # 支持中文顯示
 # 修正後的寫法：優先使用 Linux 伺服器常見的開源中文自行，再相容 Windows/Mac
-plt.rcParams['font.sans-serif'] = [
-    'WenQuanYi Micro Hei',      # Streamlit Cloud (Linux) 最常內建的中文自行
-    'Noto Sans CJK JP',         # 另一種常見的 Linux 中文字形
-    'Microsoft JhengHei',       # Windows 本地測試用
-    'Arial'
-]
-plt.rcParams['axes.unicode_minus'] = False # 解決負號變亂碼/方塊的問題
+font_path = "NotoSansTC.ttf"  # 確保字型檔跟 app.py 在同一個資料夾
+
+if os.path.exists(font_path):
+    # 1. 載入自訂的字型檔案
+    my_font = fm.FontProperties(fname=font_path)
+    # 2. 告訴 Matplotlib 全域使用這個字型名稱
+    plt.rcParams['font.family'] = my_font.get_name()
+else:
+    # 備份防呆方案
+    plt.rcParams['font.sans-serif'] = ['Arial']
+
+plt.rcParams['axes.unicode_minus'] = False  # 正常顯示負號
 
 st.title("🌊 Bingham 泥流與明渠沖刷即時互動推估工具")
 st.markdown("本工具結合**降雨降水入滲流出模型**與 **Bingham 流體力學簡化公式**，即時估算特定地形下的沖刷流速、體積與極限流動距離。")
