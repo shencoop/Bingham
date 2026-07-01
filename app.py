@@ -90,13 +90,40 @@ else:
     v_velocity = max(0.0, float(v_velocity))
     status_msg = "✅ 流體已克服屈服應力，正處於高速沖刷演進狀態。"
 
-# 4. 沖刷流動距離推估 (Runout Distance)
-slope_flat = 0.005
-tau_b_flat = rho * g * h_e * slope_flat
+# ==========================================
+# 4. 沖刷流動距離推估 (Runout Distance) - 工程合理性修正版
+# ==========================================
+# 假設下游平緩扇頂/平原坡度為 1% (0.01)
+slope_flat = 0.01
+
 if v_velocity > 0:
-    kinetic_energy = 0.5 * rho * v_velocity**2
-    net_resist = max(1.0, tau_0 - tau_b_flat)
-    runout_distance = L + (kinetic_energy * h_e) / (net_resist + 1e-3)
+    # A. 考慮坡度轉折的衝擊動能損失 (動量平面的投影損失，假設損失 30%~50% 能量)
+    energy_loss_factor = 0.6 
+    kinetic_energy = 0.5 * rho * (v_velocity ** 2) * energy_loss_factor
+    
+    # B. 下游平原段的 Bingham 底部剪切阻力（基於 Bingham 流體在平地散開的極限平衡）
+    # 當流體鋪平散開，流速變慢，黏滯阻力遞減，以屈服應力 tau_0 與地表粗糙摩擦阻力為主
+    # 這裡加入 Voellmy-Coulomb 混合阻力概念防呆：地表摩擦係數 tan(phi) 設為 0.1
+    frictional_resistance = rho * g * h_e * 0.1
+    total_resistance = tau_0 + frictional_resistance
+    
+    # 下游平地的重力下滑分力
+    gravity_drive_flat = rho * g * h_e * slope_flat
+    
+    # 淨制動阻力 (Net Brake Force)，確保分母絕對大於特定安全值，防止數值無限放大
+    net_resist = total_resistance - gravity_drive_flat
+    if net_resist < (tau_0 * 0.5): 
+        net_resist = tau_0 * 0.5 # 物理防呆：最低制動阻力不小於屈服應力的一半
+        
+    # 計算平原段滑行距離並加上原本山坡長度 L
+    travel_flat = (kinetic_energy * h_e) / net_resist
+    
+    # C. 經驗公式防呆約束 (Takahashi 崩塌堆積極限：總運移距離很少超過高差 H 的 5~8 倍)
+    max_reasonable_distance = L + (H * 7.0)
+    
+    runout_distance = L + travel_flat
+    if runout_distance > max_reasonable_distance:
+        runout_distance = max_reasonable_distance
 else:
     runout_distance = L
 
