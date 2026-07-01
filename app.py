@@ -6,8 +6,14 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Bingham 泥流與明渠沖刷即時推估工具", layout="wide")
 
 # 支持中文顯示
-plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'Arial']
-plt.rcParams['axes.unicode_minus'] = False
+# 修正後的寫法：優先使用 Linux 伺服器常見的開源中文自行，再相容 Windows/Mac
+plt.rcParams['font.sans-serif'] = [
+    'WenQuanYi Micro Hei',      # Streamlit Cloud (Linux) 最常內建的中文自行
+    'Noto Sans CJK JP',         # 另一種常見的 Linux 中文字形
+    'Microsoft JhengHei',       # Windows 本地測試用
+    'Arial'
+]
+plt.rcParams['axes.unicode_minus'] = False # 解決負號變亂碼/方塊的問題
 
 st.title("🌊 Bingham 泥流與明渠沖刷即時互動推估工具")
 st.markdown("本工具結合**降雨降水入滲流出模型**與 **Bingham 流體力學簡化公式**，即時估算特定地形下的沖刷流速、體積與極限流動距離。")
